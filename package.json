@@ -1,36 +1,43 @@
 {
-  "name": "pan&pinch_template",
+  "name": "figma-plugin-react-template",
   "version": "1.0.0",
-  "description": "Boilerplate app for react-figma",
-  "main": "./src/code.tsx",
-  "scripts": {
-    "webpack:watch": "webpack --watch"
-  },
-  "keywords": [
-    "react",
-    "react-figma",
-    "react-figma-boilerplate",
-    "figma",
-    "figma-plugins"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/react-figma/react-figma-boilerplate.git"
-  },
-  "author": "Yaroslav Losev <losevyaroslav@gmail.com>",
+  "description": "This plugin template uses Typescript. If you are familiar with Javascript, Typescript will look very familiar. In fact, valid Javascript code is already valid Typescript code.",
   "license": "ISC",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "build:watch": "webpack --mode=development --watch",
+    "prettier:format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,json}' "
+  },
   "dependencies": {
-    "@figma/plugin-typings": "^1.16.1",
-    "react": "^16.9.0",
-    "react-figma": "latest"
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "devDependencies": {
+    "@figma/plugin-typings": "^1.19.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "css-loader": "^5.0.1",
     "html-webpack-inline-source-plugin": "^0.0.10",
     "html-webpack-plugin": "^3.2.0",
-    "react-figma-webpack-config": "latest",
-    "ts-loader": "^6.0.4",
-    "typescript": "^3.5.3",
-    "webpack": "^4.39.2",
-    "webpack-cli": "^3.3.7"
+    "husky": "^4.3.0",
+    "lint-staged": "^10.5.1",
+    "prettier": "^2.2.0",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^8.0.11",
+    "typescript": "^4.1.2",
+    "url-loader": "^4.1.1",
+    "webpack": "^4.41.4",
+    "webpack-cli": "^3.3.6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,css,json}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
