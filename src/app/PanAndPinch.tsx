@@ -19,6 +19,21 @@ const PanAndPinch: React.FunctionComponent<Props> = (props) => {
   const [mouseKeyIsDown, setMouseKeyIsDown] = React.useState(false);
   const [transform, setTransform] = React.useState({ scale: 1, x: 0, y: 0 });
 
+  const returnZoomMinOrMax = () => {
+    if (transform.scale < 0.3) {
+      setTransform({
+        ...transform,
+        scale: 0.31,
+      });
+    }
+    if (transform.scale > 3) {
+      setTransform({
+        ...transform,
+        scale: 2.95,
+      });
+    }
+  };
+
   // HANDLE ON MOUSE WHEEL (FOR TRACKPADS)
   const handleOnWheel = (e: any) => {
     // DETECT PAN
@@ -31,23 +46,12 @@ const PanAndPinch: React.FunctionComponent<Props> = (props) => {
     }
 
     // DETECT PINCH
-    if (e.ctrlKey) {
-      if (transform.scale > 0.3 && transform.scale < 3) {
-        setTransform((prevState) => ({
-          ...transform,
-          scale: prevState.scale - e.deltaY / 100,
-        }));
-      } else if (transform.scale < 0.3) {
-        setTransform({
-          ...transform,
-          scale: 0.31,
-        });
-      } else if (transform.scale > 3) {
-        setTransform({
-          ...transform,
-          scale: 2.95,
-        });
-      }
+    if (e.ctrlKey || e.metaKey) {
+      setTransform((prevState) => ({
+        ...transform,
+        scale: prevState.scale - e.deltaY / 100,
+      }));
+      returnZoomMinOrMax();
     }
   };
 
@@ -66,13 +70,43 @@ const PanAndPinch: React.FunctionComponent<Props> = (props) => {
 
   // ON SPACE PRESSED
   const handleOnKeyDown = (e) => {
+    // IF SPACE PRESSED
     if (e.keyCode === 32) {
       setSpacePressed(true);
+    }
+
+    // PLUS/MINUS KEYS
+    let zoomIndex = 0.5;
+
+    // IF MINUS PRESSED
+    if (e.keyCode === 189 && transform.scale > 0.3 && transform.scale < 3) {
+      setTransform((prevState) => ({
+        ...transform,
+        scale: prevState.scale - zoomIndex,
+      }));
+    }
+
+    // IF PLUS PRESSED
+    if (e.keyCode === 187 && transform.scale > 0.3 && transform.scale < 3) {
+      setTransform((prevState) => ({
+        ...transform,
+        scale: prevState.scale + zoomIndex,
+      }));
+    }
+
+    // IF ZERO PRESSED
+    if (e.keyCode === 48) {
+      setTransform({
+        x: 0,
+        y: 0,
+        scale: 1,
+      });
     }
   };
 
   const handleOnKeyUp = () => {
     setSpacePressed(false);
+    returnZoomMinOrMax();
   };
 
   // ON MOUSE PRESSED
