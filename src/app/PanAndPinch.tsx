@@ -2,6 +2,10 @@ import * as React from "react";
 
 interface Props {
   panSpeedRatio?: number;
+  zoomFactor?: {
+    max: number;
+    min: number;
+  };
   test?: boolean;
 }
 
@@ -20,16 +24,17 @@ const PanAndPinch: React.FunctionComponent<Props> = (props) => {
   const [transform, setTransform] = React.useState({ scale: 1, x: 0, y: 0 });
 
   const returnZoomMinOrMax = () => {
-    if (transform.scale < 0.3) {
+    let correctionIndex = 0.05;
+    if (transform.scale < props.zoomFactor.min) {
       setTransform({
         ...transform,
-        scale: 0.31,
+        scale: props.zoomFactor.min + correctionIndex,
       });
     }
-    if (transform.scale > 3) {
+    if (transform.scale > props.zoomFactor.max) {
       setTransform({
         ...transform,
-        scale: 2.95,
+        scale: props.zoomFactor.max - correctionIndex,
       });
     }
   };
@@ -79,7 +84,11 @@ const PanAndPinch: React.FunctionComponent<Props> = (props) => {
     let zoomIndex = 0.5;
 
     // IF MINUS PRESSED
-    if (e.keyCode === 189 && transform.scale > 0.3 && transform.scale < 3) {
+    if (
+      e.keyCode === 189 &&
+      transform.scale > props.zoomFactor.min &&
+      transform.scale < props.zoomFactor.max
+    ) {
       setTransform((prevState) => ({
         ...transform,
         scale: prevState.scale - zoomIndex,
@@ -87,7 +96,11 @@ const PanAndPinch: React.FunctionComponent<Props> = (props) => {
     }
 
     // IF PLUS PRESSED
-    if (e.keyCode === 187 && transform.scale > 0.3 && transform.scale < 3) {
+    if (
+      e.keyCode === 187 &&
+      transform.scale > props.zoomFactor.min &&
+      transform.scale < props.zoomFactor.max
+    ) {
       setTransform((prevState) => ({
         ...transform,
         scale: prevState.scale + zoomIndex,
@@ -167,6 +180,10 @@ const PanAndPinch: React.FunctionComponent<Props> = (props) => {
 PanAndPinch.defaultProps = {
   panSpeedRatio: 1.4,
   test: false,
+  zoomFactor: {
+    max: 3,
+    min: 0.3,
+  },
 } as Partial<Props>;
 
 export default PanAndPinch;
